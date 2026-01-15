@@ -1,23 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const ReservaSchema = new mongoose.Schema({
-  nome: String,
-  telefone: String,
-  data: String,
-  horario: String,
-  pessoas: Number,
-
-  // CONTROLE DE STATUS
-  status: {
-    type: String,
-    enum: ["ativa", "concluida", "cancelada"],
-    default: "ativa",
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  nomeCliente: { type: String, required: true },
+  dataInicio: { type: String, required: true },
+  dataFim: { type: String, required: true },
+  emailCliente: { type: String },
+  telefoneCliente: { type: String },
+  criadoEm: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Reserva", ReservaSchema);
+module.exports = mongoose.model('Reserva', ReservaSchema);

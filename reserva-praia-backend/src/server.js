@@ -5,18 +5,28 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+// Libera acesso total para o App
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'DELETE', 'PUT'] }));
 app.use(express.json());
 
-// Puxando o nome exato que está no seu .env (MONGO_URI)
-const uri = process.env.MONGO_URI;
+// A URI virá do arquivo .env ou do painel da hospedagem
+const uri = process.env.MONGO_URI || "mongodb+srv://brunorochabritto94_db_user:Xtrab2221#@cluster0.mllnxld.mongodb.net/?appName=Cluster0";
 
 mongoose.connect(uri)
-  .then(() => console.log("✅ AGORA FOI! MongoDB Conectado"))
-  .catch((err) => console.log("❌ Erro ao conectar:", err.message));
+  .then(() => console.log("✅ AGORA FOI! MongoDB Conectado na Nuvem"))
+  .catch((err) => console.log("❌ Erro ao conectar banco:", err.message));
 
-// Rotas
+// Suas rotas
 const reservaRoutes = require('./routes/reserva.routes');
 app.use('/reservas', reservaRoutes);
 
-app.listen(3333, () => console.log("🚀 Servidor ON na porta 3333"));
+app.get("/", (req, res) => {
+  res.send("🚀 SERVIDOR RODANDO E PRONTO!");
+});
+
+// IMPORTANTE: Mudei para process.env.PORT para funcionar na hospedagem
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Servidor ON na porta ${PORT}`);
+});
