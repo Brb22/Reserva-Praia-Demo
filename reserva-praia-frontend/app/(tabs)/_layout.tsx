@@ -2,7 +2,23 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { SymbolView } from 'expo-symbols';
 
+import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+
 export default function TabLayout() {
+  const router = useRouter();
+
+useEffect(() => {
+  const verificar = async () => {
+    const usuario = await AsyncStorage.getItem('usuario');
+    if (!usuario) {
+      router.replace('/login');
+    }
+  };
+  verificar();
+}, []);
+
   return (
     <Tabs 
       screenOptions={{ 
