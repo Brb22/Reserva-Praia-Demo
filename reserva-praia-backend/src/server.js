@@ -11,7 +11,7 @@ app.use(cors({ origin: '*', methods: ['GET', 'POST', 'DELETE', 'PUT'] }));
 app.use(express.json());
 
 // A URI virá do arquivo .env ou do painel da hospedagem
-const uri = process.env.MONGO_URI || "mongodb+srv://brunorochabritto94_db_user:Xtrab2221#@cluster0.mllnxld.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGO_URI || "mongodb://brunorochabritto94_db_user:Xtrab2221@ac-vfbmvqe-shard-00-00.mllnxld.mongodb.net:27017,ac-vfbmvqe-shard-00-01.mllnxld.mongodb.net:27017,ac-vfbmvqe-shard-00-02.mllnxld.mongodb.net:27017/?ssl=true&replicaSet=atlas-n96reb-shard-0&authSource=admin&appName=Cluster0";
 
 mongoose.connect(uri)
   .then(() => console.log("✅ AGORA FOI! MongoDB Conectado na Nuvem"))
