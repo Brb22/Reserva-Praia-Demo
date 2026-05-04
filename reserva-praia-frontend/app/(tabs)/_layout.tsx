@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -28,8 +27,8 @@ export default function TabLayout() {
           backgroundColor: '#F7E7CE',
           borderTopWidth: 1,
           borderTopColor: 'rgba(0,0,0,0.05)',
-          height: 80,
-          paddingBottom: 15,
+          height: 70,
+          paddingBottom: 5,
           paddingTop: 8,
           position: 'absolute',
           bottom: 0,
@@ -41,8 +40,11 @@ export default function TabLayout() {
           shadowOpacity: 0.1,
         },
         tabBarLabelStyle: {
-          fontSize: 13,
-          fontWeight: '600',
+          fontSize: 14,
+          fontWeight: '700',
+        },
+        tabBarIconStyle: {
+          marginBottom: -2,
         }
       }}
     >
