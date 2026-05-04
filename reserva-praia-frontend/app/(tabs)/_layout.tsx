@@ -28,9 +28,9 @@ export default function TabLayout() {
           backgroundColor: '#F7E7CE',
           borderTopWidth: 1,
           borderTopColor: 'rgba(0,0,0,0.05)',
-          height: Platform.OS === 'web' ? 60 : 90,
-          paddingBottom: Platform.OS === 'web' ? 5 : 10,
-          paddingTop: 5,
+          height: 80,
+          paddingBottom: 15,
+          paddingTop: 8,
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -39,9 +39,10 @@ export default function TabLayout() {
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.1,
-          maxWidth: Platform.OS === 'web' ? 480 : '100%',
-          marginHorizontal: Platform.OS === 'web' ? 'auto' : 0,
-          width: '100%',
+        },
+        tabBarLabelStyle: {
+          fontSize: 13,
+          fontWeight: '600',
         }
       }}
     >
