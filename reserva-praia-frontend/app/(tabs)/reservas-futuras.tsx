@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
-  StyleSheet, Alert, RefreshControl, ActivityIndicator
+  StyleSheet, Alert, RefreshControl, ActivityIndicator, Platform
 } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,20 +14,15 @@ async function getClimaParaData(dataStr: string): Promise<{ temp: string; emoji:
     const hoje = new Date();
     const data = new Date(dataStr + 'T00:00:00');
     const diffDias = Math.floor((data.getTime() - hoje.getTime()) / (1000 * 60 * 60 * 24));
-
     if (diffDias < 0 || diffDias > 15) return { temp: '--', emoji: '📅' };
-
     const res = await axios.get(
       `https://api.open-meteo.com/v1/forecast?latitude=-24.0059&longitude=-46.4028&daily=temperature_2m_max,weathercode&timezone=America%2FSao_Paulo&forecast_days=16`
     );
-
     const temps = res.data.daily.temperature_2m_max;
     const codes = res.data.daily.weathercode;
     const datas = res.data.daily.time;
-
     const idx = datas.indexOf(dataStr);
     if (idx === -1) return { temp: '--', emoji: '📅' };
-
     const code = codes[idx];
     let emoji = '☀️';
     if (code <= 3) emoji = '⛅';
@@ -35,7 +30,6 @@ async function getClimaParaData(dataStr: string): Promise<{ temp: string; emoji:
     else if (code <= 67) emoji = '🌧️';
     else if (code <= 82) emoji = '🌦️';
     else emoji = '⛈️';
-
     return { temp: `${Math.round(temps[idx])}°C`, emoji };
   } catch {
     return { temp: '--', emoji: '🌡️' };
@@ -60,7 +54,6 @@ export default function Agenda() {
       const res = await axios.get(API_URL + '/agenda');
       const dados = Array.isArray(res.data) ? res.data : [];
       setReservas(dados);
-
       const climasTemp: Record<string, { temp: string; emoji: string }> = {};
       await Promise.all(
         dados.map(async (r: any) => {
@@ -77,18 +70,30 @@ export default function Agenda() {
     }
   };
 
-  // Atualiza ao focar na tela e a cada 30 segundos
   useFocusEffect(
     useCallback(() => {
       carregarReservas();
-      const intervalo = setInterval(() => {
-        carregarReservas();
-      }, 30000);
+      const intervalo = setInterval(() => { carregarReservas(); }, 30000);
       return () => clearInterval(intervalo);
     }, [])
   );
 
-  const excluirReserva = (id: string, nome: string) => {
+  const excluirReserva = async (id: string, nome: string) => {
+    // No web usa confirm() nativo do browser
+    if (Platform.OS === 'web') {
+      const confirmado = window.confirm(`Deseja cancelar a reserva de ${nome}?`);
+      if (!confirmado) return;
+      try {
+        await axios.delete(`${API_URL}/${id}`);
+        setReservas((prev) => prev.filter((r) => r._id !== id));
+        window.alert('✅ Reserva cancelada!');
+      } catch {
+        window.alert('Erro: Não foi possível cancelar.');
+      }
+      return;
+    }
+
+    // No celular usa Alert nativo
     Alert.alert(
       '❌ Cancelar Reserva',
       `Deseja cancelar a reserva de ${nome}?`,
@@ -139,7 +144,6 @@ export default function Agenda() {
         renderItem={({ item }) => {
           const clima = climas[item._id] || { temp: '...', emoji: '🌡️' };
           const dias = calcularDias(item.dataInicio, item.dataFim);
-
           return (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
@@ -154,9 +158,7 @@ export default function Agenda() {
                   <Text style={styles.btnExcluirTxt}>Cancelar</Text>
                 </TouchableOpacity>
               </View>
-
               <Text style={styles.nomeCliente}>{item.nomeCliente}</Text>
-
               <View style={styles.periodoRow}>
                 <Ionicons name="calendar-outline" size={16} color="#5D4037" />
                 <Text style={styles.periodoTxt}>
@@ -165,7 +167,6 @@ export default function Agenda() {
                   {new Date(item.dataFim + 'T00:00:00').toLocaleDateString('pt-BR')}
                 </Text>
               </View>
-
               <View style={styles.infoRow}>
                 <View style={styles.infoBadge}>
                   <Ionicons name="moon-outline" size={14} color="#5D4037" />
@@ -176,7 +177,6 @@ export default function Agenda() {
                   <Text style={styles.infoBadgeTxt}>{clima.temp} no check-in</Text>
                 </View>
               </View>
-
               {item.telefoneCliente ? (
                 <View style={styles.contatoRow}>
                   <Ionicons name="call-outline" size={14} color="#8B5A2B" />
@@ -201,16 +201,12 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F7E7CE', padding: 20 },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F7E7CE' },
   loadingTxt: { marginTop: 12, color: '#5D4037', fontWeight: 'bold' },
-  title: {
-    fontSize: 20, fontWeight: '900', color: '#5D4037',
-    marginTop: 40, marginBottom: 4, textAlign: 'center',
-  },
+  title: { fontSize: 20, fontWeight: '900', color: '#5D4037', marginTop: 40, marginBottom: 4, textAlign: 'center' },
   subtitulo: { textAlign: 'center', color: '#8B5A2B', marginBottom: 20, fontWeight: '600' },
   card: {
-    backgroundColor: '#FFF',
-    borderRadius: 20, padding: 18, marginBottom: 16,
-    elevation: 4, shadowColor: '#000', shadowOpacity: 0.08,
-    shadowRadius: 8, borderLeftWidth: 5, borderLeftColor: '#5D4037',
+    backgroundColor: '#FFF', borderRadius: 20, padding: 18, marginBottom: 16,
+    elevation: 4, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8,
+    borderLeftWidth: 5, borderLeftColor: '#5D4037',
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   badgeAtiva: { backgroundColor: '#E8F5E9', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
