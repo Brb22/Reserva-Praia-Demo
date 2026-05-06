@@ -7,7 +7,7 @@ import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 
-const API_URL = 'https://reserva-praia-backend.onrender.com/reservas';
+const API_URL = 'https://reserva-praia-demo.onrender.com/reservas';
 
 async function getClimaParaData(dataStr: string): Promise<{ temp: string; emoji: string }> {
   try {

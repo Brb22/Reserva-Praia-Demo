@@ -15,7 +15,7 @@ LocaleConfig.locales['pt-br'] = {
 };
 LocaleConfig.defaultLocale = 'pt-br';
 
-const API_URL = 'https://reserva-praia-backend.onrender.com/reservas';
+const API_URL = 'https://reserva-praia-demo.onrender.com/reservas';
 
 function calcularDias(inicio: string, fim: string): number {
   const a = new Date(inicio + 'T00:00:00');

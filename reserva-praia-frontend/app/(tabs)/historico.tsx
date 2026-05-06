@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 
 // ⚠️ TROQUE PELA URL DO SEU BACKEND EM PRODUÇÃO
-const API_URL = 'https://reserva-praia-backend.onrender.com/reservas';
+const API_URL = 'https://reserva-praia-demo.onrender.com/reservas';
 
 function calcularDias(inicio: string, fim: string): number {
   const a = new Date(inicio + 'T00:00:00');

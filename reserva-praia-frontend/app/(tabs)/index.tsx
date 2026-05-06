@@ -6,7 +6,7 @@ import {
 import { useRouter, useFocusEffect } from 'expo-router';
 import axios from 'axios';
 
-const API_URL = 'https://reserva-praia-backend.onrender.com/reservas';
+const API_URL = 'https://reserva-praia-demo.onrender.com/reservas';
 const CLIMA_URL =
   'https://api.open-meteo.com/v1/forecast?latitude=-24.0059&longitude=-46.4028&current=temperature_2m,weathercode&timezone=America%2FSao_Paulo';
 
